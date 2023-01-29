@@ -5,7 +5,7 @@ import {QueryParam} from '../common/query-params';
 import {getScriptHost} from '../common/script-host';
 import {ALLOWED_ORIGINS} from '../common/util';
 
-(function (d) {
+export function scoreConverter(d: Document) {
   const UIString = {
     [Language.en_US]: {
       analyzeScore: "🔍 CLICK ME TO ANALYZE SCORE",
@@ -306,4 +306,4 @@ import {ALLOWED_ORIGINS} from '../common/util';
     addScoreConverterLink();
     calculateDetailedDxStar(d.body);
   }
-})(document);
+}

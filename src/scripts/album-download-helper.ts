@@ -1,4 +1,5 @@
-(function (d) {
+
+export function albumDownloadHelper(d: Document) {
   const DIFF_REGEX = /music_(\w+)_score_back/;
   const DOWNLOAD_ICON = "💾";
   // 540 = 9 * 60 minutes = UTC+9 (Japan Time), 1 minute = 60000 milliseconds
@@ -76,4 +77,4 @@
     }
   }
   main();
-})(document);
+}

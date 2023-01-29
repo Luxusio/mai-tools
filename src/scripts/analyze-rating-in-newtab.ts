@@ -20,7 +20,7 @@ declare global {
   }
 }
 
-(function () {
+export function analyzeRatingInNewTab() {
   const BASE_URL = getScriptHost("analyze-rating-in-newtab") + "/rating-calculator/";
   let LANG = getInitialLanguage();
   const UIString = {
@@ -152,4 +152,4 @@ declare global {
   }
 
   main();
-})();
+}

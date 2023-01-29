@@ -45,7 +45,7 @@ type Cache = {
   originalLinkIdx?: string;
 };
 
-(function (d) {
+export function scoreSort(d: Document) {
   const LANG = getInitialLanguage();
   const SortLabels: Record<SortBy, string> = {
     [Language.en_US]: {
@@ -855,4 +855,4 @@ type Cache = {
     firstScrewBlock.insertAdjacentElement("beforebegin", createSortOptions());
     fetchAndAddInternalLvSort();
   }
-})(document);
+}

@@ -9,8 +9,7 @@ import {getDefaultLevel} from "../common/level-helper";
 type Cache = {
   songProp?: SongProperties;
 };
-
-(function (d) {
+export function songDetailHelper(d: Document) {
 
   const cache: Cache = {};
   const LV_DELTA = 0.02;
@@ -119,4 +118,4 @@ type Cache = {
   const rows = d.querySelectorAll(".music_score_block.w_310") as NodeListOf<HTMLElement>;
   rows.forEach(addDxStarDetail);
   fetchAndAddInternalLv();
-})(document);
+}

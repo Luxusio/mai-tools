@@ -33,7 +33,7 @@ type FriendInfo = {
   page: FriendPage;
 };
 
-(function (d) {
+export function analyzeFriendRatingInNewTab(d: Document) {
   const BASE_URL = getScriptHost("analyze-friend-rating-in-new-tab") + "/rating-calculator/?";
   let LANG = getInitialLanguage();
   const UIString = {
@@ -200,4 +200,4 @@ type FriendInfo = {
   }
 
   main();
-})(document);
+}

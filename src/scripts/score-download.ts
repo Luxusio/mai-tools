@@ -3,7 +3,7 @@ import {getInitialLanguage, Language} from '../common/lang';
 import {statusText} from '../common/score-fetch-progress';
 import {handleError} from '../common/util';
 
-(function () {
+export function scoreDownload() {
   const LANG = getInitialLanguage();
   const UIString = {
     [Language.zh_TW]: {
@@ -107,4 +107,4 @@ import {handleError} from '../common/util';
   }
 
   createOutputArea(document.querySelector(".see_through_block"));
-})();
+}

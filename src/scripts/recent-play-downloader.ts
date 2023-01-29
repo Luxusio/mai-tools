@@ -20,7 +20,7 @@ type Options = {
   olderFirst?: boolean;
 };
 
-(function (d) {
+export function recentPlayDownloader(d: Document) {
   const LANG = getInitialLanguage();
   const UIString = {
     [Language.zh_TW]: {
@@ -580,4 +580,4 @@ type Options = {
       d.head.append(css);
     }
   }
-})(document);
+}
