@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "mai-tools",
+  "description": "Maimai tool for maimai-dx website.",
+  "version": "1.0.0",
+  "content_scripts": [
+    {
+      "matches": ["https://maimaidx-eng.com/*", "https://maimaidx.jp/*"],
+      "js": ["all-in-one.js"]
+    }
+  ]
+}
