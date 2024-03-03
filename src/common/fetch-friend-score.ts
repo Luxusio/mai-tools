@@ -8,7 +8,6 @@ import {
   getSongName,
   getSyncStatus,
 } from './fetch-score-util';
-import {getDefaultLevel} from './level-helper';
 import {fetchPage} from './net-helpers';
 import {getSongNicknameWithChartType} from './song-name-helper';
 import {SongDatabase} from './song-props';
@@ -65,19 +64,14 @@ function processRow(
     }
     const songName = getSongName(row);
     const chartType = getChartType(row);
-    const props = songDb.getSongProperties(songName, state.genre, chartType);
-    let level = props ? props.lv[difficulty] : 0;
-    const levelIsPrecise = level > 0;
-    if (!level) {
-      level = getDefaultLevel(getChartLevel(row));
-    }
+    const details = songDb.getByGenre(chartType, songName, state.genre);
+    const level = details.getLevel(difficulty, getChartLevel(row));
     return {
       songName,
       genre: state.genre,
       difficulty,
       chartType,
       level,
-      levelIsPrecise,
       achievement: parseFloat(achievement),
     };
   }

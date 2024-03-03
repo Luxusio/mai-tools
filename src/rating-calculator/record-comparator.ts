@@ -2,7 +2,7 @@ import {ChartRecord} from '../common/chart-record';
 import {RankDef} from '../common/rank-functions';
 import {ChartRecordWithRating} from './types';
 
-type RecordNumberProp = 'rating' | 'level' | 'achievement';
+type RecordNumberProp = 'rating' | 'achievement';
 type RecordStringProp = 'songName';
 
 function compareNumbers(x: number, y: number) {
@@ -27,7 +27,7 @@ export function compareSongsByRating(
 ) {
   return (
     compareSongsByNumAttr(record1, record2, 'rating') ||
-    compareSongsByNumAttr(record1, record2, 'level') ||
+    compareSongsByLevel(record1, record2) ||
     compareSongsByNumAttr(record1, record2, 'achievement')
   );
 }
@@ -40,7 +40,7 @@ export function compareCandidate(record1: ChartRecordWithRating, record2: ChartR
   return (
     compareNumbers(costPerformance1, costPerformance2) ||
     compareNumbers(nextRating1.minRt, nextRating2.minRt) ||
-    compareSongsByNumAttr(record1, record2, 'level')
+    compareSongsByLevel(record1, record2)
   );
 }
 
@@ -52,7 +52,7 @@ export function compareSongsByNextRating(
   const nextRating2 = record2.nextRanks.values().next().value;
   return (
     compareNumbers(nextRating1.minRt, nextRating2.minRt) ||
-    compareSongsByNumAttr(record1, record2, 'level')
+    compareSongsByLevel(record1, record2)
   );
 }
 
@@ -61,7 +61,7 @@ export function compareSongsByLevel(
   record2: ChartRecordWithRating
 ) {
   // smaller first
-  return compareSongsByNumAttr(record2, record1, 'level');
+  return compareNumbers(record2.level.absoluteValue, record1.level.absoluteValue);
 }
 
 export function compareSongsByAchv(record1: ChartRecordWithRating, record2: ChartRecordWithRating) {

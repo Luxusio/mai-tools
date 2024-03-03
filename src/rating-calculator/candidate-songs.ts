@@ -9,7 +9,7 @@ import {
   SSSPLUS_MIN_ACHIEVEMENT,
 } from '../common/rank-functions';
 import {getSongNicknameWithChartType} from '../common/song-name-helper';
-import {SongProperties} from '../common/song-props';
+import {SongDetails} from '../common/song-props';
 import {calculateRatingRange} from './rating-functions';
 import {compareCandidate, compareSongsByLevel} from './record-comparator';
 import {ChartRecordWithRating} from './types';
@@ -33,7 +33,7 @@ function getNextRating(record: NextRatingCandidate, lowestRating: number, numOfR
     if (rank.title === ranks[i + 1].title) {
       continue;
     }
-    const [minRt] = calculateRatingRange(record.level, rank);
+    const [minRt] = calculateRatingRange(record.level.absoluteValue, rank);
     if (minRt > lowestRating) {
       ratingByRank.set(rank.title, {minRt: minRt - lowestRating, rank});
       if (ratingByRank.size >= numOfRanks) {
@@ -57,7 +57,7 @@ export function getCandidateCharts(
   for (let i = 0; i < topCount; i++) {
     const record = records[i];
     if (record.achievement >= SSSPLUS_MIN_ACHIEVEMENT) continue;
-    if (requiredLv && (record.level < requiredLv.minLv || record.level > requiredLv.maxLv))
+    if (requiredLv && (record.level.absoluteValue < requiredLv.minLv || record.level.absoluteValue > requiredLv.maxLv))
       continue;
     record.nextRanks = getNextRating(record, Math.floor(record.rating), 2);
     candidates.push(record);
@@ -66,7 +66,7 @@ export function getCandidateCharts(
   for (let i = topCount; i < records.length; i++) {
     const record = records[i];
     if (record.achievement >= SSSPLUS_MIN_ACHIEVEMENT) continue;
-    if (requiredLv && (record.level < requiredLv.minLv || record.level > requiredLv.maxLv))
+    if (requiredLv && (record.level.absoluteValue < requiredLv.minLv || record.level.absoluteValue > requiredLv.maxLv))
       continue;
     const ratingByRank = getNextRating(record, minRating, 2);
     if (!ratingByRank.size) {
@@ -89,7 +89,7 @@ export function getCandidateCharts(
  * @param requiredLv Required level (choose only charts of this level)
  */
 export function getNotPlayedCharts(
-  songList: ReadonlyArray<SongProperties>,
+  songList: ReadonlyArray<SongDetails>,
   records: ReadonlyArray<ChartRecordWithRating>,
   minRating: number,
   count: number,
@@ -113,25 +113,21 @@ export function getNotPlayedCharts(
   const shuffledSongList = shuffleArray(songList);
   for (const s of shuffledSongList) {
     // index 1 means ADVANCED (skip BASIC)
-    for (let index = 1; index < s.lv.length; index++) {
-      let lv = s.lv[index];
-      const levelIsPrecise = lv > 0;
-      lv = Math.abs(lv);
-      const key = getSongNicknameWithChartType(s.name === 'Link' ? s.nickname : s.name, '', s.dx);
+    for (let index = 1; index < s.properties.lv.length; index++) {
+      const level = s.getLevel(index, undefined);
       // Math.min is hack for newly added Re:MASTER charts.
       // I think the hack is no longer needed as I made parseSongProperties check lv array length,
       // but just want to stay safe.
       const diff = DIFFICULTIES[Math.min(index, DIFFICULTIES.length - 1)];
-      if (playedCharts.has(key + diff) || lv < easiestLv || lv > hardestLv) {
+      if (playedCharts.has(s.displayName + diff) || level.absoluteValue < easiestLv || level.absoluteValue > hardestLv) {
         continue; // skip played, too easy, or too hard charts
       }
       const record: ChartRecordWithRating = {
-        songName: s.name,
+        songName: s.properties.name,
         difficulty: diff,
-        level: lv,
-        levelIsPrecise,
+        level: level,
         genre: '',
-        chartType: s.dx,
+        chartType: s.properties.dx,
         rating: 0,
         achievement: 0,
       };

@@ -3,7 +3,7 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {useLanguage} from '../../common/lang-react';
 import {LevelDef} from '../../common/level-helper';
 import {RANK_SSS_PLUS} from '../../common/rank-functions';
-import {SongDatabase, SongProperties} from '../../common/song-props';
+import {SongDatabase, SongDetails} from '../../common/song-props';
 import {getCandidateCharts, getNotPlayedCharts} from '../candidate-songs';
 import {CommonMessages} from '../common-messages';
 import {
@@ -48,7 +48,7 @@ interface Props {
   songDatabase: SongDatabase;
   ratingData: RatingData;
   isCurrentVersion?: boolean;
-  songList?: ReadonlyArray<SongProperties>;
+  songList?: ReadonlyArray<SongDetails>;
   hidden?: boolean;
 }
 

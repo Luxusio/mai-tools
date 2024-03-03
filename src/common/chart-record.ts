@@ -1,12 +1,12 @@
 import {ChartType} from './chart-type';
 import {Difficulty} from './difficulties';
+import {DifficultyLevel} from './song-props';
 
 export interface ChartRecord {
   songName: string;
   genre: string;
   difficulty: Difficulty;
-  level: number;
-  levelIsPrecise?: boolean;
+  level: DifficultyLevel;
   chartType: ChartType;
   achievement: number;
 }

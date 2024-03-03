@@ -6,7 +6,7 @@ import {GameRegion} from '../../common/game-region';
 import {GameVersion} from '../../common/game-version';
 import {Language} from '../../common/lang';
 import {useLanguage} from '../../common/lang-react';
-import {BasicSongProps, SongDatabase, SongProperties} from '../../common/song-props';
+import {BasicSongProps, SongDatabase, SongDetails} from '../../common/song-props';
 import {NUM_TOP_NEW_CHARTS, NUM_TOP_OLD_CHARTS} from '../rating-analyzer';
 import {calculateFullRating} from '../rating-functions';
 import {RatingData} from '../types';
@@ -40,8 +40,8 @@ interface Props {
 interface State {
   fullNewChartsRating?: number;
   fullOldChartsRating?: number;
-  newSongs?: ReadonlyArray<SongProperties>;
-  oldSongs?: ReadonlyArray<SongProperties>;
+  newSongs?: ReadonlyArray<SongDetails>;
+  oldSongs?: ReadonlyArray<SongDetails>;
 }
 
 export const RatingOutput = ({
@@ -58,8 +58,8 @@ export const RatingOutput = ({
       : gameRegion === GameRegion.Jp
       ? songDatabase.getAllProps()
       : null;
-    const newSongs = allSongProps?.filter((song) => song.debut === gameVer);
-    const oldSongs = allSongProps?.filter((song) => song.debut < gameVer);
+    const newSongs = allSongProps?.filter((song) => song.properties.debut === gameVer);
+    const oldSongs = allSongProps?.filter((song) => song.properties.debut < gameVer);
     const fullNewChartsRating = newSongs ? calculateFullRating(newSongs, NUM_TOP_NEW_CHARTS) : 0;
     const fullOldChartsRating = oldSongs ? calculateFullRating(oldSongs, NUM_TOP_OLD_CHARTS) : 0;
     return {newSongs, oldSongs, fullNewChartsRating, fullOldChartsRating};

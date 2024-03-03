@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {ChartRecord} from '../../common/chart-record';
-import {getOfficialLevel} from '../../common/level-helper';
 import {compareNumber} from '../../common/number-helper';
 import {getRankDistribution, getRankMap} from '../rank-distribution';
 import {RankDistributionDataRow} from './RankDistributionDataRow';
@@ -12,17 +11,17 @@ const LEVEL_RANK_CELL_CLASSNAMES = ['officialLevelCell'];
 
 function getRecordsPerLevel(records: ReadonlyArray<ChartRecord>) {
   const levels = records.map((r) => r.level);
-  levels.sort(compareNumber);
+  levels.sort((a, b) => compareNumber(a.absoluteValue, b.absoluteValue));
   levels.reverse();
   const recordsPerLevel = new Map<string, ChartRecord[]>();
   for (const lv of levels) {
-    const officialLv = getOfficialLevel(lv);
+    const officialLv = lv.officialLabel;
     if (!recordsPerLevel.has(officialLv)) {
       recordsPerLevel.set(officialLv, []);
     }
   }
   for (const r of records) {
-    recordsPerLevel.get(getOfficialLevel(r.level)).push(r);
+    recordsPerLevel.get(r.level.officialLabel).push(r);
   }
   return recordsPerLevel;
 }

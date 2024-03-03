@@ -6,7 +6,6 @@ import {fetchScoresFull} from '../common/fetch-self-score';
 import {getGameRegionFromOrigin, isMaimaiNetOrigin} from '../common/game-region';
 import {getVersionName} from '../common/game-version';
 import {getInitialLanguage, Language} from '../common/lang';
-import {getOfficialLevel} from '../common/level-helper';
 import {fetchGameVersion} from '../common/net-helpers';
 import {getRankByAchievement} from '../common/rank-functions';
 import {statusText} from '../common/score-fetch-progress';
@@ -132,8 +131,8 @@ import {loadSongDatabase} from '../common/song-props';
     [Field.Version]: (r) => (r.version < 0 ? '?' : getVersionName(r.version)),
     [Field.ChartType]: (r) => getChartTypeName(r.chartType),
     [Field.Difficulty]: (r) => getDifficultyName(r.difficulty),
-    [Field.Level]: (r) => getOfficialLevel(Math.abs(r.level)),
-    [Field.InternalLevel]: (r) => (r.level > 0 ? r.level.toFixed(1) : '?'),
+    [Field.Level]: (r) => r.level.officialLabel,
+    [Field.InternalLevel]: (r) => r.level.absoluteValue.toFixed(1),
     [Field.Achievement]: (r) => r.achievement.toFixed(4) + '%',
     [Field.Rank]: (r) => getRankByAchievement(r.achievement).title,
     [Field.FcAp]: (r) => r.fcap || '-',

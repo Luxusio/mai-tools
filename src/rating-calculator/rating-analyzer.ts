@@ -4,7 +4,7 @@ import {GameRegion} from '../common/game-region';
 import {GameVersion} from '../common/game-version';
 import {getRankByAchievement, SSSPLUS_MIN_ACHIEVEMENT} from '../common/rank-functions';
 import {getRemovedSongs} from '../common/removed-songs';
-import {SongDatabase, SongProperties} from '../common/song-props';
+import {SongDatabase, SongDetails} from '../common/song-props';
 import {compareSongsByRating} from './record-comparator';
 import {ChartRecordWithRating, RatingData} from './types';
 
@@ -27,18 +27,12 @@ function getScoreMultiplier(achievement: number) {
  */
 function getRecordWithRating(
   record: ChartRecord,
-  songProps?: SongProperties
+  songProps: SongDetails
 ): ChartRecordWithRating {
-  if (songProps) {
-    const lv = songProps.lv[record.difficulty];
-    if (typeof lv === 'number') {
-      record.levelIsPrecise = lv > 0;
-      record.level = Math.abs(lv);
-    }
-  }
+  record.level = songProps.getLevel(record.difficulty, record.level.absoluteValue + '');
   return {
     ...record,
-    rating: record.level * getScoreMultiplier(record.achievement),
+    rating: record.level.absoluteValue * getScoreMultiplier(record.achievement),
   };
 }
 
@@ -57,9 +51,9 @@ export function analyzePlayerRating(
     if (removedSongs.includes(record.songName)) {
       continue;
     }
-    const songProps = songDb.getSongProperties(record.songName, record.genre, record.chartType);
-    const isNewChart = songProps ? songProps.debut === gameVer : record.chartType === ChartType.DX;
-    const recordWithRating = getRecordWithRating(record, songProps);
+    const details = songDb.getByGenre(record.chartType, record.songName, record.genre);
+    const isNewChart = details.properties ? details.properties.debut === gameVer : record.chartType === ChartType.DX;
+    const recordWithRating = getRecordWithRating(record, details);
     if (isNewChart) {
       newChartRecords.push(recordWithRating);
     } else {

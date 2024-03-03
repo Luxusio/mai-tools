@@ -2,7 +2,7 @@ import React, {useCallback, useState} from 'react';
 
 import {Language} from '../../common/lang';
 import {useLanguage} from '../../common/lang-react';
-import {SongDatabase, SongProperties} from '../../common/song-props';
+import {SongDatabase, SongDetails} from '../../common/song-props';
 import {RatingData} from '../types';
 import {CandidateChartRecords} from './CandidatesChartRecords';
 import {CollapsibleSectionTitle} from './CollapsibleSectionTitle';
@@ -26,7 +26,7 @@ interface Props {
   songDatabase: SongDatabase;
   ratingData: RatingData;
   isCurrentVersion?: boolean;
-  songList?: ReadonlyArray<SongProperties>;
+  songList?: ReadonlyArray<SongDetails>;
 }
 
 export const RatingCandidates = ({songDatabase, ratingData, songList, isCurrentVersion}: Props) => {

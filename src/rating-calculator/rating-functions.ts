@@ -1,6 +1,6 @@
 import {compareNumber} from '../common/number-helper';
 import {getRankDefinitions, RANK_SSS_PLUS, RankDef} from '../common/rank-functions';
-import {SongProperties} from '../common/song-props';
+import {SongDetails} from '../common/song-props';
 
 export function calculateRatingRange(lv: number, rank: RankDef) {
   const rankDefs = getRankDefinitions();
@@ -11,11 +11,11 @@ export function calculateRatingRange(lv: number, rank: RankDef) {
   return [minRating, maxRating];
 }
 
-export function calculateFullRating(songs: ReadonlyArray<SongProperties>, count: number) {
+export function calculateFullRating(songs: ReadonlyArray<SongDetails>, count: number) {
   let allLvs: number[] = [];
   for (const song of songs) {
     allLvs = allLvs.concat(
-      song.lv.filter((lv) => typeof lv === 'number').map((lv) => Math.abs(lv))
+      song.properties.lv.filter((lv) => typeof lv === 'number').map((lv) => Math.abs(lv))
     );
   }
   allLvs.sort(compareNumber);

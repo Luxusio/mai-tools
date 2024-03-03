@@ -306,20 +306,19 @@ function readPlayerScoresFromQueryParams(qp: URLSearchParams, songDb: SongDataba
     const chartType = chartTypes[i];
     const difficulty = difficulties[i];
     const achievement = achievements[i];
-    const props = songDb.getSongPropsByIco(ico, chartType);
-    if (!props) {
+    const details = songDb.getByIco(chartType, ico);
+    if (!details.properties) {
       console.warn('Could not find song for ', ico, chartType, difficulty, achievement);
       failed = true;
       return;
     }
-    const lv = props.lv[difficulty];
+    const lv = details.getLevel(difficulty, undefined);
     return {
-      songName: props.name,
-      genre: props.nickname === 'Link (nico)' ? 'niconico' : '',
+      songName: details.properties.name,
+      genre: details.properties.nickname === 'Link (nico)' ? 'niconico' : '',
       difficulty,
       chartType,
       level: lv,
-      levelIsPrecise: lv > 0,
       achievement,
     };
   });
