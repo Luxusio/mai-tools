@@ -1,11 +1,13 @@
-import {ChartType} from './chart-type';
+import {ChartType, getChartTypeName} from './chart-type';
 import {GameRegion} from './game-region';
 import {GameVersion} from './game-version';
 import {getMaiToolsBaseUrl} from './script-host';
-import {getSongNickname} from './song-name-helper';
+import {getSongNickname, isNiconicoLink} from './song-name-helper';
 import {MagicApi} from './infra/magic-api';
 import {MaiToolsApi} from './infra/mai-tools-api';
 import {SongDatabaseFactory} from './application/song-database-factory';
+import {Difficulty} from './difficulties';
+import {getDefaultLevel, getDisplayLv, getOfficialLevel} from './level-helper';
 
 export interface BasicSongProps {
   dx: ChartType;
@@ -17,6 +19,47 @@ export interface BasicSongProps {
 export interface SongProperties extends BasicSongProps {
   debut: number; // from 0 to latest version number
   lv: ReadonlyArray<number>;
+}
+
+export class SongDetails {
+  constructor(
+    readonly properties: SongProperties | undefined,
+    readonly displayName: string,
+  ) {}
+  
+  get version(): number | undefined {
+    return this.properties?.debut;
+  }
+  
+  getLevel(
+    difficulty: Difficulty,
+    defaultLabel: string | undefined
+  ): DifficultyLevel {
+    const defaultLevel = getDefaultLevel(defaultLabel);
+    if (!this.properties) {
+      return {
+        label: getDisplayLv(defaultLevel, true),
+        officialLabel: getOfficialLevel(defaultLevel),
+        value: defaultLevel,
+        absoluteValue: Math.abs(defaultLevel)
+      };
+    }
+    
+    const exactLevel = this.properties.lv[difficulty];
+    return {
+      label: getDisplayLv(exactLevel, false),
+      officialLabel: getOfficialLevel(defaultLevel),
+      value: exactLevel,
+      absoluteValue: Math.abs(exactLevel)
+    };
+  }
+}
+
+export class DifficultyLevel {
+  label: string;
+  officialLabel: string;
+  value: number;
+  absoluteValue: number;
 }
 
 export class SongDatabase {
@@ -70,21 +113,56 @@ export class SongDatabase {
     }
   }
 
-  getAllProps(): SongProperties[] {
-    return Array.from(this.dxMap.values()).concat(Array.from(this.standardMap.values()));
+  getAllProps(): SongDetails[] {
+    const details: SongDetails[] = [];
+    for (const songProps of this.dxMap.values()) {
+      details.push(this.toSongDetails(ChartType.DX, songProps));
+    }
+    for (const songProps of this.standardMap.values()) {
+      details.push(this.toSongDetails(ChartType.STANDARD, songProps));
+    }
+    return details;
   }
 
-  getPropsForSongs(songs: ReadonlyArray<BasicSongProps>): SongProperties[] {
+  getPropsForSongs(songs: ReadonlyArray<BasicSongProps>): SongDetails[] {
     return songs
-      .map((s) => {
-        const props =
-          this.getSongProperties(s.nickname, '', s.dx) || this.getSongProperties(s.name, '', s.dx);
-        if (!props) {
-          console.warn('Could not find song properties for', s);
-        }
-        return props;
-      })
-      .filter((props) => !!props);
+      .map((s) => this.getByNickname(s.dx, s.nickname ?? s.name))
+      .filter(details => details.properties);
+  }
+
+  async getByIdx(type: ChartType, name: string, idx: string): Promise<SongDetails> {
+    if (name === 'Link') {
+      const isNico = await isNiconicoLink(idx);
+      return this.getByGenre(type, name, isNico ? 'niconico' : 'org');
+    }
+
+    return this.getByNickname(type, name);
+  }
+  
+  getByGenre(type: ChartType, name: string, genre: string): SongDetails {
+    return this.getByNickname(type, getSongNickname(name, genre));
+  }
+
+  getByIco(type: ChartType, ico: string): SongDetails {
+    const icoName = this.nameByIco.get(ico);
+    return this.getByNickname(type, icoName);
+  }
+
+  private getByNickname(type: ChartType, nickname: string): SongDetails {
+    const map = type === ChartType.DX ? this.dxMap : this.standardMap;
+    const properties = map.get(nickname);
+    return this.toSongDetails(type, properties);
+  }
+
+  private toSongDetails(
+    type: ChartType,
+    properties: SongProperties
+  ): SongDetails {
+    const nickname = properties.nickname ?? properties.name;
+    const displayName = (this.dxMap.has(nickname) && this.standardMap.has(nickname)) ?
+      `${nickname}[${getChartTypeName(type)}]` :
+      nickname;
+    return new SongDetails(properties, displayName);
   }
 
   toString(): string {
