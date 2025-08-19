@@ -22,7 +22,7 @@ module.exports = (env) => ({
     'plate-progress': './src/plate-progress/main.tsx',
     'rating-calculator': './src/rating-calculator/main.ts',
     'rating-visualizer': './src/rating-visualizer/main.tsx',
-    ...scriptEntryPoints,
+    ...scriptEntryPoints
   },
   output: {
     path: `${__dirname}/build`,
@@ -32,27 +32,35 @@ module.exports = (env) => ({
         return path.join(SCRIPTS_OUTPUT_DIR, chunkName + '.js');
       }
       return chunkName + '/main.bundle.js';
-    },
+    }
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: 'ts-loader',
+        use: 'ts-loader'
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-      },
-    ],
+        use: ['style-loader', 'css-loader']
+      }
+    ]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js']
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'build')
+    },
+    compress: true,
+    port: 8080,
+    hot: true // Enable Hot Reloading
   },
   plugins: [
     new CopyPlugin({
-      patterns: [{from: 'public/', to: './'}],
-    }),
-  ],
+      patterns: [{from: 'public/', to: './'}]
+    })
+  ]
 });
