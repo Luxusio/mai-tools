@@ -58,6 +58,5 @@ npm run watch
 
 ## Code Search
 
-Using SourceGraph
-https://sourcegraph.com/search?q=context%3Aglobal+repo%3A%5Egithub%5C.com%2Fmyjian%2Fmai-tools%24+GameRegion&patternType=standard&sm=1&groupBy=path (
-replace GameRegion with whatever you want to find)
+Use [SourceGraph](https://sourcegraph.com/search?q=context%3Aglobal+repo%3A%5Egithub%5C.com%2Fmyjian%2Fmai-tools%24+GameRegion&patternType=standard&sm=1&groupBy=path) (
+replace GameRegion with whatever you want to find )
