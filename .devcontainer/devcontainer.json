@@ -1,0 +1,56 @@
+{
+  "name": "mai-tools",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "mai-tools",
+  "customizations": {
+    "jetbrains": {
+      "settings": {
+        "com.intellij:app:EditorSettings.is_ensure_newline_at_eof": true,
+        "com.intellij:app:BuiltInServerOptions.builtInServerPort": 55847,
+        "com.intellij:app:HttpConfigurable.use_proxy_pac": true
+      }
+    },
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-json",
+        "ms-playwright.playwright",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.path-intellisense",
+        "ms-vscode.vscode-eslint"
+      ],
+      "settings": {
+        "typescript.preferences.quoteStyle": "single",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "files.exclude": {
+          "**/node_modules": true,
+          "**/build": true,
+          "**/.git": true
+        },
+        "search.exclude": {
+          "**/node_modules": true,
+          "**/build": true
+        }
+      }
+    }
+  },
+  "workspaceFolder": "/workspaces/mai-tools",
+  "postCreateCommand": "npm install",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "ppa": true,
+      "version": "latest"
+    }
+  }
+}
